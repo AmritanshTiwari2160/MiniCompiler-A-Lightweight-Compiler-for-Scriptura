@@ -1,0 +1,14 @@
+assign x to 2;
+assign y to x times 3 plus 1;
+print(y);
+
+if ( y greater 6 ) {
+  print(100);
+} else {
+  print(0);
+}
+
+while ( x less 5 ) {
+  assign x to x plus 1;
+  print(x);
+}
