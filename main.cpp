@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <map>
 #include "ast.h"
-
+ASTNode *root = nullptr;
 extern ASTNode *root;
 extern int yyparse();
 extern FILE *yyin;

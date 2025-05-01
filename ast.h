@@ -157,7 +157,7 @@ public:
     }
 };
 
-// number literal
+// number literal (you used to call this NumNode in parser.y)
 class NumberNode : public ASTNode
 {
     int value;

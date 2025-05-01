@@ -1,14 +1,16 @@
-assign x to 2;
-assign y to x times 3 plus 1;
-print(y);
+assign x to 10;
+assign y to 5;
+assign z to x plus y times 2;
+print z;
 
-if ( y greater 6 ) {
-  print(100);
-} else {
-  print(0);
+assign i to 0;
+while (i less 5) {
+    print i;
+    assign i to i plus 1;
 }
 
-while ( x less 5 ) {
-  assign x to x plus 1;
-  print(x);
+if (x greater y) {
+    print x;
+} else {
+    print y;
 }
