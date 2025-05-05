@@ -1,4 +1,5 @@
 This is a lightweight compiler for Scriptura. Scriptura is a custom language that is highly user-friendly.
+### Sample Code Snippet
 ```scriptura
 // Prime check program in Scriptura
 input n;  // Read the number
@@ -24,8 +25,3 @@ Before you start, make sure you have the following installed:
 - **Flex** (for lexical analysis)
 - **G++** (for compiling)
 - **Make** (for building the project)
-
-You can install these using the following commands:
-
-```bash
-sudo apt-get install bison flex g++ make
