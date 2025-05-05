@@ -1,20 +1,5 @@
-assign 10 to x;
-assign 20 to y;
-assign (x plus y times 2) to z;
-print z;
-
-input w;
-assign w plus z to total;
-print total;
-
-assign 0 to i;
-while (i less 5) {
-    print i;
-    assign (i plus 1) to i;        
-}
-
-if (x greater y) {
-    print x;
-} else {
-    print y;
-}
+assign 2 to i;
+print i;
+input x;
+print x;
+print "hello";

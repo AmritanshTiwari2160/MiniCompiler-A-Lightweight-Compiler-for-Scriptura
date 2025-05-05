@@ -5,16 +5,19 @@
 #include <string>
 #include <map>
 #include <cstdio>
+#include <cstdlib>
+#include <iostream> // for std::cout, std::cerr
 
-// Base class
+// Base AST node
 class ASTNode
 {
 public:
     virtual ~ASTNode() {}
+    // Evaluate node, updating sym if needed. Return int for numeric nodes.
     virtual int eval(std::map<std::string, int> &) { return 0; }
 };
 
-// Statement list
+// A list of statements
 class StmtList : public ASTNode
 {
     std::vector<ASTNode *> stmts;
@@ -26,6 +29,7 @@ public:
         for (auto p : stmts)
             delete p;
     }
+
     int eval(std::map<std::string, int> &sym) override
     {
         for (auto p : stmts)
@@ -34,7 +38,7 @@ public:
     }
 };
 
-// Assignment
+// Assignment: assign expr to variable
 class AssignNode : public ASTNode
 {
     std::string id;
@@ -43,6 +47,7 @@ class AssignNode : public ASTNode
 public:
     AssignNode(const char *name, ASTNode *e) : id(name), expr(e) {}
     ~AssignNode() { delete expr; }
+
     int eval(std::map<std::string, int> &sym) override
     {
         int v = expr->eval(sym);
@@ -51,21 +56,22 @@ public:
     }
 };
 
-// Input
+// Runtime integer input: input var;
 class InputNode : public ASTNode
 {
     std::string id;
 
 public:
     InputNode(const char *name) : id(name) {}
+
     int eval(std::map<std::string, int> &sym) override
     {
         int v = 0;
-        // Open the terminal directly
+        // Always read from the terminal, even if stdin is redirected
         FILE *tty = fopen("/dev/tty", "r");
         if (!tty)
         {
-            std::perror("fopen /dev/tty");
+            std::perror("fopen(/dev/tty)");
         }
         else
         {
@@ -82,7 +88,25 @@ public:
         return v;
     }
 };
-// Print
+
+// String literal node
+class StringNode : public ASTNode
+{
+    std::string value;
+
+public:
+    StringNode(const std::string &v) : value(v) {}
+
+    // eval not used directly for printing
+    int eval(std::map<std::string, int> &) override
+    {
+        return 0;
+    }
+
+    const std::string &getValue() const { return value; }
+};
+
+// Print statement: print(expr);
 class PrintNode : public ASTNode
 {
     ASTNode *expr;
@@ -90,15 +114,23 @@ class PrintNode : public ASTNode
 public:
     PrintNode(ASTNode *e) : expr(e) {}
     ~PrintNode() { delete expr; }
+
     int eval(std::map<std::string, int> &sym) override
     {
+        // If it's a string literal, print it directly
+        if (auto s = dynamic_cast<StringNode *>(expr))
+        {
+            std::cout << s->getValue() << std::endl;
+            return 0;
+        }
+        // Otherwise, evaluate numeric expression
         int v = expr->eval(sym);
         std::printf("%d\n", v);
         return v;
     }
 };
 
-// If-Else
+// If-else statement
 class IfNode : public ASTNode
 {
     ASTNode *cond;
@@ -117,19 +149,24 @@ public:
         for (auto p : elseStmts)
             delete p;
     }
+
     int eval(std::map<std::string, int> &sym) override
     {
         if (cond->eval(sym))
+        {
             for (auto p : thenStmts)
                 p->eval(sym);
+        }
         else
+        {
             for (auto p : elseStmts)
                 p->eval(sym);
+        }
         return 0;
     }
 };
 
-// While
+// While loop
 class WhileNode : public ASTNode
 {
     ASTNode *cond;
@@ -144,16 +181,19 @@ public:
         for (auto p : body)
             delete p;
     }
+
     int eval(std::map<std::string, int> &sym) override
     {
         while (cond->eval(sym))
+        {
             for (auto p : body)
                 p->eval(sym);
+        }
         return 0;
     }
 };
 
-// Binary operations
+// Binary operations (+, -, *, /, %, >, <, ==)
 class BinaryOpNode : public ASTNode
 {
     std::string op;
@@ -167,9 +207,12 @@ public:
         delete left;
         delete right;
     }
+
     int eval(std::map<std::string, int> &sym) override
     {
-        int a = left->eval(sym), b = right->eval(sym);
+        int a = left->eval(sym);
+        int b = right->eval(sym);
+
         if (op == "+")
             return a + b;
         else if (op == "-")
@@ -177,12 +220,28 @@ public:
         else if (op == "*")
             return a * b;
         else if (op == "/")
+        {
+            if (b == 0)
+            {
+                std::cerr << "Runtime Error: Division by zero\n";
+                std::exit(1);
+            }
             return a / b;
+        }
+        else if (op == "%")
+        {
+            if (b == 0)
+            {
+                std::cerr << "Runtime Error: Modulo by zero\n";
+                std::exit(1);
+            }
+            return a % b;
+        }
         else if (op == ">")
             return a > b;
         else if (op == "<")
             return a < b;
-        else /*==*/
+        else
             return a == b;
     }
 };
@@ -194,7 +253,10 @@ class NumberNode : public ASTNode
 
 public:
     NumberNode(int v) : value(v) {}
-    int eval(std::map<std::string, int> &) override { return value; }
+    int eval(std::map<std::string, int> &) override
+    {
+        return value;
+    }
 };
 
 // Variable reference
@@ -206,7 +268,7 @@ public:
     VarNode(const char *name) : id(name) {}
     int eval(std::map<std::string, int> &sym) override
     {
-        return sym[id];
+        return sym[id]; // you may want to check existence
     }
 };
 

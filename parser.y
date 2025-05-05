@@ -15,16 +15,17 @@
 %}
 
 %union {
-    int num;
-    char* id;
-    ASTNode* node;
-    std::vector<ASTNode*>* stmts;
+    int                          num;
+    char*                        id;
+    ASTNode*                     node;
+    std::vector<ASTNode*>*       stmts;
 }
 
 %token <num>   NUMBER
 %token <id>    IDENT
+%token <id> STRING
 %token         ASSIGN INPUT TO PRINT IF ELSE WHILE
-%token         PLUS MINUS TIMES DIVIDE GREATER LESS EQUAL
+%token         PLUS MINUS TIMES DIVIDE MOD GREATER LESS EQUAL
 %token         LPAREN RPAREN LBRACE RBRACE SEMICOLON
 
 %type  <node>  program stmt expr
@@ -80,15 +81,21 @@ stmt:
 ;
 
 expr:
-    expr PLUS expr       { $$ = new BinaryOpNode("+", $1, $3); }
-  | expr MINUS expr      { $$ = new BinaryOpNode("-", $1, $3); }
-  | expr TIMES expr      { $$ = new BinaryOpNode("*", $1, $3); }
-  | expr DIVIDE expr     { $$ = new BinaryOpNode("/", $1, $3); }
-  | expr GREATER expr    { $$ = new BinaryOpNode(">", $1, $3); }
-  | expr LESS expr       { $$ = new BinaryOpNode("<", $1, $3); }
+    expr PLUS expr       { $$ = new BinaryOpNode("+",  $1, $3); }
+  | expr MINUS expr      { $$ = new BinaryOpNode("-",  $1, $3); }
+  | expr TIMES expr      { $$ = new BinaryOpNode("*",  $1, $3); }
+  | expr DIVIDE expr     { $$ = new BinaryOpNode("/",  $1, $3); }
+  | expr MOD expr        { $$ = new BinaryOpNode("%",  $1, $3); }  /* new modulo */
+  | expr GREATER expr    { $$ = new BinaryOpNode(">",  $1, $3); }
+  | expr LESS expr       { $$ = new BinaryOpNode("<",  $1, $3); }
   | expr EQUAL expr      { $$ = new BinaryOpNode("==", $1, $3); }
   | IDENT                { $$ = new VarNode($1); free($1); }
   | NUMBER               { $$ = new NumberNode($1); }
+  | STRING {
+        std::string raw($1);
+        $$ = new StringNode(raw.substr(1, raw.size() - 2));
+        free($1);
+    }
 ;
 
 %%

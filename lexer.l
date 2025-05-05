@@ -5,6 +5,9 @@
 
 %%
 
+\/\/[^\n]*            { /* skip single-line comments */ }
+"/*"([^*]|\*+[^*/])*\*+"/"   { /* skip multi-line comments */ }
+\"([^\\\"]|\\.)*\"    { yylval.id = strdup(yytext); return STRING; }
 "assign"          { return ASSIGN; }
 "input"           { return INPUT; }
 "to"              { return TO; }
@@ -12,10 +15,12 @@
 "if"              { return IF; }
 "else"            { return ELSE; }
 "while"           { return WHILE; }
+
 "plus"            { return PLUS; }
 "minus"           { return MINUS; }
 "times"           { return TIMES; }
 "divide"          { return DIVIDE; }
+"mod"             { return MOD; }        /* new modulo keyword */
 "greater"         { return GREATER; }
 "less"            { return LESS; }
 "equal"           { return EQUAL; }
