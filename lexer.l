@@ -6,6 +6,7 @@
 %%
 
 "assign"          { return ASSIGN; }
+"input"           { return INPUT; }
 "to"              { return TO; }
 "print"           { return PRINT; }
 "if"              { return IF; }
@@ -18,6 +19,7 @@
 "greater"         { return GREATER; }
 "less"            { return LESS; }
 "equal"           { return EQUAL; }
+
 "("               { return LPAREN; }
 ")"               { return RPAREN; }
 "{"               { return LBRACE; }

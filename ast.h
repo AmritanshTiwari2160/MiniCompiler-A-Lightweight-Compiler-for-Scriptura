@@ -6,7 +6,7 @@
 #include <map>
 #include <cstdio>
 
-// Base
+// Base class
 class ASTNode
 {
 public:
@@ -34,7 +34,7 @@ public:
     }
 };
 
-// assign IDENT to expr
+// Assignment
 class AssignNode : public ASTNode
 {
     std::string id;
@@ -51,7 +51,38 @@ public:
     }
 };
 
-// print(expr)
+// Input
+class InputNode : public ASTNode
+{
+    std::string id;
+
+public:
+    InputNode(const char *name) : id(name) {}
+    int eval(std::map<std::string, int> &sym) override
+    {
+        int v = 0;
+        // Open the terminal directly
+        FILE *tty = fopen("/dev/tty", "r");
+        if (!tty)
+        {
+            std::perror("fopen /dev/tty");
+        }
+        else
+        {
+            std::printf("Input for %s: ", id.c_str());
+            std::fflush(stdout);
+            if (fscanf(tty, "%d", &v) != 1)
+            {
+                std::fprintf(stderr, "Invalid integer input for %s\n", id.c_str());
+                v = 0;
+            }
+            fclose(tty);
+        }
+        sym[id] = v;
+        return v;
+    }
+};
+// Print
 class PrintNode : public ASTNode
 {
     ASTNode *expr;
@@ -67,7 +98,7 @@ public:
     }
 };
 
-// if (cond) thenStmts else elseStmts
+// If-Else
 class IfNode : public ASTNode
 {
     ASTNode *cond;
@@ -98,7 +129,7 @@ public:
     }
 };
 
-// while (cond) stmts
+// While
 class WhileNode : public ASTNode
 {
     ASTNode *cond;
@@ -122,7 +153,7 @@ public:
     }
 };
 
-// binary operators
+// Binary operations
 class BinaryOpNode : public ASTNode
 {
     std::string op;
@@ -138,8 +169,7 @@ public:
     }
     int eval(std::map<std::string, int> &sym) override
     {
-        int a = left->eval(sym);
-        int b = right->eval(sym);
+        int a = left->eval(sym), b = right->eval(sym);
         if (op == "+")
             return a + b;
         else if (op == "-")
@@ -157,7 +187,7 @@ public:
     }
 };
 
-// number literal (you used to call this NumNode in parser.y)
+// Number literal
 class NumberNode : public ASTNode
 {
     int value;
@@ -167,7 +197,7 @@ public:
     int eval(std::map<std::string, int> &) override { return value; }
 };
 
-// variable reference
+// Variable reference
 class VarNode : public ASTNode
 {
     std::string id;
@@ -176,7 +206,7 @@ public:
     VarNode(const char *name) : id(name) {}
     int eval(std::map<std::string, int> &sym) override
     {
-        return sym[id]; // you might want to check existence
+        return sym[id];
     }
 };
 

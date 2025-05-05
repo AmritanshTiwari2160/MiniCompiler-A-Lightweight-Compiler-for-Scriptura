@@ -66,23 +66,24 @@ extern int yydebug;
     NUMBER = 258,                  /* NUMBER  */
     IDENT = 259,                   /* IDENT  */
     ASSIGN = 260,                  /* ASSIGN  */
-    TO = 261,                      /* TO  */
-    PRINT = 262,                   /* PRINT  */
-    IF = 263,                      /* IF  */
-    ELSE = 264,                    /* ELSE  */
-    WHILE = 265,                   /* WHILE  */
-    PLUS = 266,                    /* PLUS  */
-    MINUS = 267,                   /* MINUS  */
-    TIMES = 268,                   /* TIMES  */
-    DIVIDE = 269,                  /* DIVIDE  */
-    GREATER = 270,                 /* GREATER  */
-    LESS = 271,                    /* LESS  */
-    EQUAL = 272,                   /* EQUAL  */
-    LPAREN = 273,                  /* LPAREN  */
-    RPAREN = 274,                  /* RPAREN  */
-    LBRACE = 275,                  /* LBRACE  */
-    RBRACE = 276,                  /* RBRACE  */
-    SEMICOLON = 277                /* SEMICOLON  */
+    INPUT = 261,                   /* INPUT  */
+    TO = 262,                      /* TO  */
+    PRINT = 263,                   /* PRINT  */
+    IF = 264,                      /* IF  */
+    ELSE = 265,                    /* ELSE  */
+    WHILE = 266,                   /* WHILE  */
+    PLUS = 267,                    /* PLUS  */
+    MINUS = 268,                   /* MINUS  */
+    TIMES = 269,                   /* TIMES  */
+    DIVIDE = 270,                  /* DIVIDE  */
+    GREATER = 271,                 /* GREATER  */
+    LESS = 272,                    /* LESS  */
+    EQUAL = 273,                   /* EQUAL  */
+    LPAREN = 274,                  /* LPAREN  */
+    RPAREN = 275,                  /* RPAREN  */
+    LBRACE = 276,                  /* LBRACE  */
+    RBRACE = 277,                  /* RBRACE  */
+    SEMICOLON = 278                /* SEMICOLON  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -98,7 +99,7 @@ union YYSTYPE
     ASTNode* node;
     std::vector<ASTNode*>* stmts;
 
-#line 102 "parser.tab.h"
+#line 103 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -2,8 +2,10 @@
 #include <cstdlib>
 #include <map>
 #include "ast.h"
+
+// Define the global AST root pointer (remove the redundant extern)
 ASTNode *root = nullptr;
-extern ASTNode *root;
+
 extern int yyparse();
 extern FILE *yyin;
 
@@ -28,7 +30,7 @@ int main(int argc, char **argv)
     int parseResult = yyparse();
     if (parseResult != 0)
     {
-        fprintf(stderr, "Parsing failed with code %d\n", parseResult);
+        std::fprintf(stderr, "Parsing failed with code %d\n", parseResult);
         if (yyin != stdin)
             fclose(yyin);
         return parseResult;
@@ -39,7 +41,7 @@ int main(int argc, char **argv)
     {
         std::map<std::string, int> symTable;
         root->eval(symTable);
-        delete root; // free memory
+        delete root; // free the AST
     }
 
     // 4) Clean up
@@ -47,6 +49,5 @@ int main(int argc, char **argv)
     {
         fclose(yyin);
     }
-
     return 0;
 }
