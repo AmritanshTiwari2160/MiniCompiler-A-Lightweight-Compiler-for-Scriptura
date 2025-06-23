@@ -1,0 +1,15 @@
+assign "Siddharth" to a;
+assign " Shukla" to b;
+assign mergestring(a,b) to c;
+print(c);
+
+input d;
+input e;
+assign d plus e to f;
+print(f);
+
+assign 0 to i;
+for (assign 0 to i; i less than 5; assign i plus 1 to i) {
+    print i;
+}
+
